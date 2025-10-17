@@ -1,8 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.mapper.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.sg.nusiss.gamevaultbackend.entity.forum.UserContentRelation;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.UserContentRelation;
 
 import java.util.List;
 
@@ -118,4 +118,3 @@ public interface ForumContentLikeMapper {
             @Param("relationType") Long relationType
     );
 }
-

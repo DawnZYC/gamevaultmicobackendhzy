@@ -1,14 +1,14 @@
-package com.sg.nusiss.gamevaultbackend.service.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.service.forum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sg.nusiss.gamevaultbackend.config.forum.ForumPaginationConfig;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumContent;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumContentMapper;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumMetricMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.config.forum.ForumPaginationConfig;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumContentMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumMetricMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -438,4 +438,3 @@ public class ForumPostService {
         }
     }
 }
-

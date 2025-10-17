@@ -1,8 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.mapper.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
 import java.util.List;
 
 /**
@@ -56,4 +56,3 @@ public interface ForumUserMapper {
      */
     List<ForumUser> findByIds(@Param("userIds") List<Long> userIds);
 }
-

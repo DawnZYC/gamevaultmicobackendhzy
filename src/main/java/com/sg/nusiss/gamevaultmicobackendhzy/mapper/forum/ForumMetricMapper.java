@@ -1,8 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.mapper.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ContentMetric;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ContentMetric;
 import java.util.List;
 import java.util.Map;
 
@@ -66,4 +66,3 @@ public interface ForumMetricMapper {
     List<Long> findTopContentsByMetric(@Param("metricName") String metricName,
                                        @Param("limit") int limit);
 }
-

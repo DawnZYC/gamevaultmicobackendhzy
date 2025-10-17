@@ -1,9 +1,9 @@
-package com.sg.nusiss.gamevaultbackend.service.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.service.forum;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumUserMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumUserMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -203,4 +203,3 @@ public class ForumUserService {
         }
     }
 }
-

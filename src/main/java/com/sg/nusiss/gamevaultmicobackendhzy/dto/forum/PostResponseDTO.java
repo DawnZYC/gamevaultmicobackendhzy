@@ -1,9 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.dto.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.dto.forum;
 
-import lombok.Getter;
-import lombok.Setter;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumContent;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
+
 import java.time.LocalDateTime;
 
 /**

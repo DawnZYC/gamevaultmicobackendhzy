@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.util.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.util.forum;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -120,4 +120,3 @@ public class ForumJwtUtil {
         }
     }
 }
-

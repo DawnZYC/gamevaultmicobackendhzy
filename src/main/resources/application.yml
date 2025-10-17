@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 
 activation:
   stock:
@@ -65,7 +65,7 @@ app:
 # MyBatis configuration for forum functionality
 mybatis:
   mapper-locations: classpath:mapper/forum/*.xml
-  type-aliases-package: com.sg.nusiss.gamevaultbackend.entity.forum
+  type-aliases-package: com.sg.nusiss.gamevaultmicobackendhzy.entity.forum
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

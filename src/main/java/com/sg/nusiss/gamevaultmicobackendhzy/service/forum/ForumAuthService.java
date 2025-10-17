@@ -1,14 +1,14 @@
-package com.sg.nusiss.gamevaultbackend.service.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.service.forum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumAccount;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumAccountMapper;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumUserMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumAccount;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumAccountMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumUserMapper;
 
 import java.time.LocalDateTime;
 
@@ -84,4 +84,3 @@ public class ForumAuthService {
         return userMapper.findById(userId);
     }
 }
-

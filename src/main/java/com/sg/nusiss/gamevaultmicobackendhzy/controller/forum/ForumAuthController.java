@@ -1,15 +1,15 @@
-package com.sg.nusiss.gamevaultbackend.controller.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.controller.forum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumAccount;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
-import com.sg.nusiss.gamevaultbackend.service.forum.ForumAuthService;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumAccount;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ForumAuthService;
 
-import com.sg.nusiss.gamevaultbackend.util.forum.ForumJwtUtil;
+import com.sg.nusiss.gamevaultmicobackendhzy.util.forum.ForumJwtUtil;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.annotation.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.annotation.forum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,4 +10,3 @@ import java.lang.annotation.Target;
 public @interface RequireForumAuth {
     boolean required() default true;
 }
-

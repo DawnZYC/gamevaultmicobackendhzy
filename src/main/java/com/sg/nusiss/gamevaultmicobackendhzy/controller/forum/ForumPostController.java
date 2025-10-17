@@ -1,6 +1,17 @@
-package com.sg.nusiss.gamevaultbackend.controller.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.controller.forum;
 
+import com.sg.nusiss.gamevaultmicobackendhzy.annotation.forum.RequireForumAuth;
+import com.sg.nusiss.gamevaultmicobackendhzy.dto.forum.PostDTO;
+import com.sg.nusiss.gamevaultmicobackendhzy.dto.forum.PostResponseDTO;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.UserContentRelation;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ForumContentLikeService;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ForumPostService;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ForumUserService;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ViewTracker;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,18 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.sg.nusiss.gamevaultbackend.annotation.forum.RequireForumAuth;
-import com.sg.nusiss.gamevaultbackend.dto.forum.PostDTO;
-import com.sg.nusiss.gamevaultbackend.dto.forum.PostResponseDTO;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumContent;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumUser;
-import com.sg.nusiss.gamevaultbackend.entity.forum.UserContentRelation;
-import com.sg.nusiss.gamevaultbackend.service.forum.ForumContentLikeService;
-import com.sg.nusiss.gamevaultbackend.service.forum.ForumPostService;
-import com.sg.nusiss.gamevaultbackend.service.forum.ForumUserService;
-import com.sg.nusiss.gamevaultbackend.service.forum.ViewTracker;
 
-import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

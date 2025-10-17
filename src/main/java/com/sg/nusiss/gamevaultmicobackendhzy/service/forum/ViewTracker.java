@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.service.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.service.forum;
 
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -67,4 +67,3 @@ public class ViewTracker {
         return viewRecords.size();
     }
 }
-

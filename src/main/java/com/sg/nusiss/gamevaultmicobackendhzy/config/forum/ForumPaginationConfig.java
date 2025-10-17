@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.config.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.config.forum;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -55,4 +55,3 @@ public class ForumPaginationConfig {
                 '}';
     }
 }
-

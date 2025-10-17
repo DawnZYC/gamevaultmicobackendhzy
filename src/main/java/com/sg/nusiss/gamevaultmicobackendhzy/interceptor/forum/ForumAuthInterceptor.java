@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.interceptor.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.interceptor.forum;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.sg.nusiss.gamevaultbackend.annotation.forum.RequireForumAuth;
-import com.sg.nusiss.gamevaultbackend.util.forum.ForumJwtUtil;
+import com.sg.nusiss.gamevaultmicobackendhzy.annotation.forum.RequireForumAuth;
+import com.sg.nusiss.gamevaultmicobackendhzy.util.forum.ForumJwtUtil;
 
 @Component
 public class ForumAuthInterceptor implements HandlerInterceptor {
@@ -78,4 +78,3 @@ public class ForumAuthInterceptor implements HandlerInterceptor {
         return true;
     }
 }
-

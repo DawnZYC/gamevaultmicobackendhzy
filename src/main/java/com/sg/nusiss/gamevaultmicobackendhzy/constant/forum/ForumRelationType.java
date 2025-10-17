@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.constant.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.constant.forum;
 
 /**
  * 关系类型常量
@@ -82,4 +82,3 @@ public class ForumRelationType {
         return null;
     }
 }
-

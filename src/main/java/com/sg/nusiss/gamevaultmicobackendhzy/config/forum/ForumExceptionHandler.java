@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.config.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.config.forum;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * 论坛全局异常处理器
  * 统一处理论坛模块中的异常，返回标准化的错误响应
  */
-@RestControllerAdvice(basePackages = "com.sg.nusiss.gamevaultbackend.controller.forum")
+@RestControllerAdvice(basePackages = "com.sg.nusiss.gamevaultmicobackendhzy.controller.forum")
 @Order(1)
 public class ForumExceptionHandler {
 
@@ -119,4 +119,3 @@ public class ForumExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
-

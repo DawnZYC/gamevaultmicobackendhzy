@@ -1,6 +1,6 @@
-package com.sg.nusiss.gamevaultbackend.config;
+package com.sg.nusiss.gamevaultmicobackendhzy.config;
 
-import com.sg.nusiss.gamevaultbackend.service.forum.ViewTracker;
+import com.sg.nusiss.gamevaultmicobackendhzy.service.forum.ViewTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

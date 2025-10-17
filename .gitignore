@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.idea/
+.mvn/
+.gitattributes
+.gitignore
+mvnw
+mvnw.cmd
+
+docker/
+.DS_Store
+
+uploads/

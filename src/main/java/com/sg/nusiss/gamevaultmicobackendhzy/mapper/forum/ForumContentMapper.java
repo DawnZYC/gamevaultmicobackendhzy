@@ -1,8 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.mapper.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumContent;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
 import java.util.List;
 
 /**
@@ -71,9 +71,6 @@ public interface ForumContentMapper {
     // ==================== 层级结构查询 ====================
 
     /**
-     * 查询子内容（回复）
-     */
-    /**
      * 查询子内容（回复）- 带分页
      */
     List<ForumContent> findChildren(
@@ -131,4 +128,3 @@ public interface ForumContentMapper {
      */
     int countActiveByAuthorId(@Param("authorId") Long authorId);
 }
-

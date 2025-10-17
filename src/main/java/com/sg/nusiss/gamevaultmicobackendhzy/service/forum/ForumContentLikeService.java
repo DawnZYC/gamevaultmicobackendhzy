@@ -1,12 +1,12 @@
-package com.sg.nusiss.gamevaultbackend.service.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.service.forum;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sg.nusiss.gamevaultbackend.constant.forum.ForumRelationType;
-import com.sg.nusiss.gamevaultbackend.entity.forum.UserContentRelation;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumContentLikeMapper;
-import com.sg.nusiss.gamevaultbackend.mapper.forum.ForumMetricMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.constant.forum.ForumRelationType;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.UserContentRelation;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumContentLikeMapper;
+import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumMetricMapper;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -236,4 +236,3 @@ public class ForumContentLikeService {
         return metricMapper.findTopContentsByMetric("like_count", limit);
     }
 }
-

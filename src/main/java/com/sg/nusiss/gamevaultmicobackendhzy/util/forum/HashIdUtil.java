@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.util.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.util.forum;
 
 import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,4 +141,3 @@ public class HashIdUtil {
         }
     }
 }
-

@@ -1,8 +1,8 @@
-package com.sg.nusiss.gamevaultbackend.mapper.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.sg.nusiss.gamevaultbackend.entity.forum.ForumAccount;
+import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumAccount;
 
 /**
  * 账户 Mapper 接口
@@ -36,4 +36,3 @@ public interface ForumAccountMapper {
      */
     ForumAccount findByUserId(@Param("userId") Long userId);
 }
-

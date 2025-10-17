@@ -1,4 +1,4 @@
-package com.sg.nusiss.gamevaultbackend.entity.forum;
+package com.sg.nusiss.gamevaultmicobackendhzy.entity.forum;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -63,4 +63,3 @@ public class ContentMetric {
                 '}';
     }
 }
-
