@@ -13,6 +13,7 @@
         <result property="bodyPlain" column="body_plain"/>
         <result property="authorId" column="author_id"/>
         <result property="parentId" column="parent_id"/>
+        <result property="replyTo" column="reply_to"/>
         <result property="status" column="status"/>
         <result property="createdDate" column="created_date"/>
         <result property="updatedDate" column="updated_date"/>
@@ -37,6 +38,7 @@
             c.body_plain,
             c.author_id,
             c.parent_id,
+            c.reply_to,
             c.status,
             c.created_date,
             c.updated_date,
@@ -59,10 +61,10 @@
     <!-- 插入新内容 -->
     <insert id="insert" parameterType="ForumContent" useGeneratedKeys="true" keyProperty="contentId">
         INSERT INTO contents (
-            content_type, title, body, body_plain, author_id, parent_id,
+            content_type, title, body, body_plain, author_id, parent_id, reply_to,
             status, created_date, updated_date
         ) VALUES (
-                     #{contentType}, #{title}, #{body}, #{bodyPlain}, #{authorId}, #{parentId},
+                     #{contentType}, #{title}, #{body}, #{bodyPlain}, #{authorId}, #{parentId}, #{replyTo},
                      #{status}, #{createdDate}, #{updatedDate}
                  )
     </insert>
@@ -96,6 +98,7 @@
             c.body_plain,
             c.author_id,
             c.parent_id,
+            c.reply_to,
             c.status,
             c.created_date,
             c.updated_date,
@@ -142,6 +145,7 @@
             c.body_plain,
             c.author_id,
             c.parent_id,
+            c.reply_to,
             c.status,
             c.created_date,
             c.updated_date,
@@ -189,6 +193,7 @@
             c.body_plain,
             c.author_id,
             c.parent_id,
+            c.reply_to,
             c.status,
             c.created_date,
             c.updated_date,
@@ -218,18 +223,21 @@
     <!-- 根据作者ID获取帖子列表（分页） -->
     <select id="findByAuthorId" resultMap="ContentResultMap">
         SELECT
-            content_id,
-            title,
-            body,
-            author_id,
-            created_date,
-            updated_date,
-            status
+        content_id,
+        title,
+        body,
+        author_id,
+        parent_id,
+        reply_to,  <!-- 🔥 新增 -->
+        created_date,
+        updated_date,
+        status
         FROM contents
         WHERE author_id = #{authorId}
         ORDER BY created_date DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
+
 
     <!-- 统计作者的帖子总数 -->
     <select id="countByAuthorId" resultType="int">

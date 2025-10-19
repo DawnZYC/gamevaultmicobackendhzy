@@ -4,7 +4,7 @@
 -- ================================================================
 
 -- 设置基本配置
-SET timezone = 'Asia/Shanghai';
+SET timezone = 'Asia/Singapore';
 SET client_encoding = 'UTF8';
 
 -- ================================================================
@@ -73,11 +73,13 @@ CREATE TABLE IF NOT EXISTS contents (
     body_plain TEXT NOT NULL,
     author_id BIGINT NOT NULL,
     parent_id BIGINT,
+    reply_to BIGINT,
     status VARCHAR(20) DEFAULT 'active',
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_contents_author FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_contents_parent FOREIGN KEY (parent_id) REFERENCES contents(content_id) ON DELETE CASCADE
+    CONSTRAINT fk_contents_parent FOREIGN KEY (parent_id) REFERENCES contents(content_id) ON DELETE CASCADE,
+    CONSTRAINT fk_contents_reply_to FOREIGN KEY (reply_to) REFERENCES contents(content_id) ON DELETE SET NULL
 );
 
 -- 属性定义表（定义可用的属性类型）
@@ -170,6 +172,7 @@ CREATE INDEX IF NOT EXISTS idx_contents_parent ON contents(parent_id);
 CREATE INDEX IF NOT EXISTS idx_contents_status ON contents(status);
 CREATE INDEX IF NOT EXISTS idx_contents_created ON contents(created_date DESC);
 CREATE INDEX IF NOT EXISTS idx_contents_type_status ON contents(content_type, status);
+CREATE INDEX IF NOT EXISTS idx_contents_reply_to ON contents(reply_to);
 
 -- 属性查询索引
 CREATE INDEX IF NOT EXISTS idx_content_attrs_content ON content_attributes(content_id);

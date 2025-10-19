@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sg.nusiss.gamevaultmicobackendhzy.config.forum.ForumPaginationConfig;
 import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
 import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumContentMapper;
 import com.sg.nusiss.gamevaultmicobackendhzy.mapper.forum.ForumMetricMapper;
@@ -319,9 +318,15 @@ public class ForumPostService {
     }
 
 
-    @Transactional
-    public ForumContent createReply(Long parentId, String body, Long authorId) {
-        logger.info("创建回复 - 父内容ID: {}, 作者ID: {}", parentId, authorId);
+    /**
+     * 创建回复（支持楼中楼）
+     * @param parentId 父内容ID(帖子ID)
+     * @param body 回复内容
+     * @param authorId 作者ID
+     * @param replyTo 回复的目标回复ID(可选,如果是回复帖子则为null)
+     */
+    public ForumContent createReply(Long parentId, String body, Long authorId, Long replyTo) {
+        logger.info("创建回复 - 父内容ID: {}, 作者ID: {}, replyTo: {}", parentId, authorId, replyTo);
 
         // 参数验证
         if (parentId == null) {
@@ -334,25 +339,52 @@ public class ForumPostService {
             throw new IllegalArgumentException("作者ID不能为空");
         }
 
-        // 验证父内容存在
+        // 验证父内容存在(必须是帖子)
         ForumContent parent = contentMapper.findById(parentId);
         if (parent == null) {
             throw new RuntimeException("父内容不存在");
         }
+        if (!"post".equals(parent.getContentType())) {
+            throw new RuntimeException("只能回复帖子");
+        }
+
+        // 🔥 如果有 replyTo,验证目标回复是否存在
+        if (replyTo != null) {
+            ForumContent targetReply = contentMapper.findById(replyTo);
+            if (targetReply == null) {
+                logger.warn("目标回复不存在 - replyTo: {}", replyTo);
+                throw new RuntimeException("目标回复不存在");
+            }
+            // 确保目标回复属于同一个帖子
+            if (!targetReply.getParentId().equals(parentId)) {
+                logger.warn("目标回复不属于该帖子 - 目标回复的parentId: {}, 当前parentId: {}",
+                        targetReply.getParentId(), parentId);
+                throw new RuntimeException("目标回复不属于该帖子");
+            }
+            logger.info("验证通过 - 回复目标: {}, 属于帖子: {}", replyTo, parentId);
+        }
 
         try {
-            // 创建回复实体
-            ForumContent reply = new ForumContent("reply", body.trim(), authorId, parentId);
+            // 🔥 创建回复实体,使用支持 replyTo 的构造函数
+            ForumContent reply;
+            if (replyTo != null) {
+                reply = new ForumContent("reply", body.trim(), authorId, parentId, replyTo);
+                logger.info("创建楼中楼回复 - 回复目标ID: {}", replyTo);
+            } else {
+                reply = new ForumContent("reply", body.trim(), authorId, parentId);
+                logger.info("创建根回复(直接回复帖子)");
+            }
 
             // 保存到数据库
             int result = contentMapper.insert(reply);
             if (result > 0) {
-                logger.info("回复创建成功 - 回复ID: {}, 父内容ID: {}", reply.getContentId(), parentId);
+                logger.info("回复创建成功 - 回复ID: {}, 父内容ID: {}, replyTo: {}",
+                        reply.getContentId(), parentId, replyTo);
 
                 // 初始化回复的统计数据
                 initializeReplyMetrics(reply.getContentId());
 
-                // 更新父内容的回复数 +1
+                // 更新父内容(帖子)的回复数 +1
                 metricMapper.incrementMetric(parentId, "reply_count", 1);
 
                 return reply;
@@ -360,7 +392,8 @@ public class ForumPostService {
                 throw new RuntimeException("创建回复失败");
             }
         } catch (Exception e) {
-            logger.error("创建回复异常", e);
+            logger.error("创建回复异常 - parentId: {}, authorId: {}, replyTo: {}",
+                    parentId, authorId, replyTo, e);
             throw e;
         }
     }
@@ -369,7 +402,7 @@ public class ForumPostService {
     /**
      * 获取帖子的回复列表（分页）
      */
-    public List<ForumContent> getRepliesByPostId(Long postId, int page, int size) {
+    public List<ForumContent> getRepliesByPostId(Long postId, int page, int size, Long currentUserId) {
         if (postId == null) {
             throw new IllegalArgumentException("帖子ID不能为空");
         }
@@ -379,7 +412,7 @@ public class ForumPostService {
 
         int offset = page * size;
 
-        // 🔥 修复：传入 offset 和 size
+        // 查询回复列表
         List<ForumContent> replies = contentMapper.findChildren(postId, offset, size);
 
         // 为每个回复加载统计数据（如果 SQL 没有 JOIN）
@@ -388,6 +421,25 @@ public class ForumPostService {
                 Integer likeCount = metricMapper.getMetricValue(reply.getContentId(), "like_count");
                 reply.setLikeCount(likeCount != null ? likeCount : 0);
             }
+        }
+
+        // 🔥 新增：设置当前用户的点赞状态
+        if (currentUserId != null && !replies.isEmpty()) {
+            // 收集所有回复的ID
+            List<Long> replyIds = replies.stream()
+                    .map(ForumContent::getContentId)
+                    .collect(Collectors.toList());
+
+            // 批量查询点赞状态
+            Map<Long, Boolean> likeStatus = contentLikeService
+                    .batchCheckLikeStatus(currentUserId, replyIds);
+
+            // 设置每个回复的点赞状态
+            replies.forEach(reply ->
+                    reply.setIsLikedByCurrentUser(
+                            likeStatus.getOrDefault(reply.getContentId(), false)
+                    )
+            );
         }
 
         return replies;
@@ -427,6 +479,17 @@ public class ForumPostService {
         metricMapper.incrementMetric(reply.getParentId(), "reply_count", -1);
     }
 
+
+
+    /**
+     * 根据ID获取内容(帖子或回复)
+     */
+    public ForumContent getContentById(Long contentId) {
+        if (contentId == null) {
+            throw new IllegalArgumentException("内容ID不能为空");
+        }
+        return contentMapper.findById(contentId);
+    }
     /**
      * 初始化回复的统计数据
      */

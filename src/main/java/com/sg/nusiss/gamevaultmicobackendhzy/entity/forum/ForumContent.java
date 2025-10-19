@@ -19,7 +19,8 @@ public class ForumContent {
     private String body;         // 原始内容（HTML/Markdown）
     private String bodyPlain;    // 纯文本内容（用于搜索）
     private Long authorId;
-    private Long parentId;       // 父内容ID，支持层级结构
+    private Long parentId;// 父内容ID，支持层级结构
+    private Long replyTo;
     private String status;       // 'active', 'deleted', 'hidden', 'pending'
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
@@ -53,7 +54,18 @@ public class ForumContent {
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
     }
-
+    //支持 replyTo 的构造函数 (用于楼中楼回复)
+    public ForumContent(String contentType, String body, Long authorId, Long parentId, Long replyTo) {
+        this.contentType = contentType;
+        this.body = body;
+        this.bodyPlain = extractPlainText(body);
+        this.authorId = authorId;
+        this.parentId = parentId;
+        this.replyTo = replyTo;  // 🔥 设置 replyTo
+        this.status = "active";
+        this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
+    }
     // 重写 setBody 方法，自动更新 bodyPlain
     public void setBody(String body) {
         this.body = body;
@@ -181,6 +193,22 @@ public class ForumContent {
 
     public boolean isActive() {
         return "active".equals(this.status);
+    }
+
+    public Long getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(Long replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    public Boolean getLikedByCurrentUser() {
+        return isLikedByCurrentUser;
+    }
+
+    public void setLikedByCurrentUser(Boolean likedByCurrentUser) {
+        isLikedByCurrentUser = likedByCurrentUser;
     }
 
     public void softDelete() {

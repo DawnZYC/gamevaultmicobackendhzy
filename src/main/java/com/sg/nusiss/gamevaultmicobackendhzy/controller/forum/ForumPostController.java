@@ -3,6 +3,7 @@ package com.sg.nusiss.gamevaultmicobackendhzy.controller.forum;
 import com.sg.nusiss.gamevaultmicobackendhzy.annotation.forum.RequireForumAuth;
 import com.sg.nusiss.gamevaultmicobackendhzy.dto.forum.PostDTO;
 import com.sg.nusiss.gamevaultmicobackendhzy.dto.forum.PostResponseDTO;
+import com.sg.nusiss.gamevaultmicobackendhzy.dto.forum.ReplyResponseDTO;
 import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumContent;
 import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.ForumUser;
 import com.sg.nusiss.gamevaultmicobackendhzy.entity.forum.UserContentRelation;
@@ -612,6 +613,61 @@ public class ForumPostController {
         }
     }
     /**
+     * 获取帖子的回复列表
+     * GET /api/forum/posts/{postId}/replies
+     */
+    @GetMapping("/{postId}/replies")
+    public ResponseEntity<Map<String, Object>> getReplies(
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            HttpServletRequest request
+    ) {
+        try {
+            // 获取当前用户ID
+            Long currentUserId = (Long) request.getAttribute("userId");
+
+            // 获取回复列表 (ForumContent 实体)
+            List<ForumContent> replies = postService.getRepliesByPostId(postId, page, size, currentUserId);
+
+            // 🔥 转换为 DTO 列表
+            List<ReplyResponseDTO> replyDTOs = new ArrayList<>();
+
+            for (ForumContent reply : replies) {
+                // 获取回复作者信息
+                ForumUser author = userService.getUserById(reply.getAuthorId());
+
+                // 🔥 如果是楼中楼回复，获取被回复用户的信息
+                ForumUser replyToUser = null;
+                if (reply.getReplyTo() != null) {
+                    ForumContent targetReply = postService.getContentById(reply.getReplyTo());
+                    if (targetReply != null) {
+                        replyToUser = userService.getUserById(targetReply.getAuthorId());
+                    }
+                }
+
+                // 创建 DTO
+                ReplyResponseDTO dto = ReplyResponseDTO.fromContentAndUsers(reply, author, replyToUser);
+                replyDTOs.add(dto);
+            }
+
+            // 统计总数
+            int total = postService.getReplyCountByPostId(postId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("replies", replyDTOs);  // 🔥 返回 DTO 列表
+            response.put("total", total);
+            response.put("page", page);
+            response.put("size", size);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("获取回复列表失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "获取回复列表失败", "message", e.getMessage()));
+        }
+    }
+    /**
      * 创建回复
      * POST /api/forum/posts/{postId}/replies
      */
@@ -619,13 +675,16 @@ public class ForumPostController {
     @RequireForumAuth
     public ResponseEntity<?> createReply(
             @PathVariable Long postId,
-            @RequestBody Map<String, String> request,
+            @RequestBody Map<String, Object> request,  // ✅ 改成 Object 以支持 Long 类型
             HttpServletRequest httpRequest) {
 
         Long userId = (Long) httpRequest.getAttribute("userId");
-        String body = request.get("body");
+        String body = (String) request.get("body");
+        Long replyTo = request.get("replyTo") != null
+                ? Long.valueOf(request.get("replyTo").toString())
+                : null;  // ✅ 获取 replyTo 参数
 
-        logger.info("创建回复 - 帖子ID: {}, 用户ID: {}", postId, userId);
+        logger.info("创建回复 - 帖子ID: {}, 用户ID: {}, replyTo: {}", postId, userId, replyTo);
 
         try {
             if (userId == null) {
@@ -640,8 +699,8 @@ public class ForumPostController {
                 return createErrorResponse("用户无效", "用户不存在或已被禁用", HttpStatus.FORBIDDEN);
             }
 
-            // 创建回复
-            ForumContent reply = postService.createReply(postId, body, userId);
+            // ✅ 传递 replyTo 参数
+            ForumContent reply = postService.createReply(postId, body, userId, replyTo);
 
             // 获取作者信息
             ForumUser author = getUserSafely(userId);
@@ -662,62 +721,6 @@ public class ForumPostController {
         } catch (Exception e) {
             logger.error("创建回复失败", e);
             return createErrorResponse("创建回复失败", e.getMessage());
-        }
-    }
-
-    /**
-     * 获取帖子的回复列表
-     * GET /api/forum/posts/{postId}/replies
-     */
-    /**
-     * 获取帖子的回复列表
-     * GET /api/forum/posts/{postId}/replies
-     */
-    @GetMapping("/{postId}/replies")
-    public ResponseEntity<?> getReplies(
-            @PathVariable Long postId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-
-        logger.info("获取回复列表 - 帖子ID: {}, 页码: {}, 每页: {}", postId, page, size);
-
-        try {
-            // 🔥 修复：传入 page 和 size 参数
-            List<ForumContent> replies = postService.getRepliesByPostId(postId, page, size);
-            int totalCount = postService.getReplyCountByPostId(postId);
-
-            // 为每个回复添加作者信息
-            List<Map<String, Object>> replyDTOs = new ArrayList<>();
-            for (ForumContent reply : replies) {
-                ForumUser author = getUserSafely(reply.getAuthorId());
-
-                Map<String, Object> dto = new HashMap<>();
-                dto.put("replyId", reply.getContentId());
-                dto.put("body", reply.getBody());
-                dto.put("bodyPlain", reply.getBodyPlain());
-                dto.put("authorId", reply.getAuthorId());
-                dto.put("authorName", author != null ? author.getUsername() : null);
-                dto.put("authorNickname", author != null ? author.getNickname() : null);
-                dto.put("authorAvatarUrl", author != null ? author.getAvatarUrl() : null);
-                dto.put("likeCount", reply.getLikeCount() != null ? reply.getLikeCount() : 0);
-                dto.put("createdDate", reply.getCreatedDate());
-                dto.put("updatedDate", reply.getUpdatedDate());
-
-                replyDTOs.add(dto);
-            }
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("replies", replyDTOs);
-            response.put("totalCount", totalCount);
-            response.put("currentPage", page);
-            response.put("pageSize", size);
-            response.put("totalPages", (int) Math.ceil((double) totalCount / size));
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            logger.error("获取回复列表失败", e);
-            return createErrorResponse("获取回复列表失败", e.getMessage());
         }
     }
 
@@ -759,6 +762,30 @@ public class ForumPostController {
             logger.error("删除回复失败", e);
             return createErrorResponse("删除回复失败", e.getMessage());
         }
+    }
+
+    // 点赞回复
+    @PostMapping("/{postId}/replies/{replyId}/like")
+    public ResponseEntity<?> likeReply(
+            @PathVariable Long postId,
+            @PathVariable Long replyId,
+            HttpServletRequest request
+    ) {
+        Long userId = (Long) request.getAttribute("userId");
+        contentLikeService.likeContent(replyId, userId); // 直接用 replyId
+        return ResponseEntity.ok().build();
+    }
+
+    // 取消点赞回复
+    @DeleteMapping("/posts/{postId}/replies/{replyId}/like")
+    public ResponseEntity<?> unlikeReply(
+            @PathVariable Long postId,
+            @PathVariable Long replyId,
+            HttpServletRequest request
+    ) {
+        Long userId = (Long) request.getAttribute("userId");
+        contentLikeService.unlikeContent(replyId, userId); // 直接用 replyId
+        return ResponseEntity.ok().build();
     }
 
     // ==================== 辅助方法 ====================
